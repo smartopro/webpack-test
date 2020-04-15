@@ -1,0 +1,11 @@
+@import "~normalize.css";
+
+.container {
+    padding-top: 2rem;
+    margin: 0 auto;
+    color: brown;
+}
+
+h1 {
+    text-align: center;
+}

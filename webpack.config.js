@@ -1,0 +1,193 @@
+const path = require("path");
+const HTMLWebpackPlugin = require("html-webpack-plugin");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const ImageminPlugin = require("imagemin-webpack-plugin").default;
+const imageminMozjpeg = require("imagemin-mozjpeg");
+const imageminWebp = require("imagemin-webp");
+const DashboardPlugin = require("webpack-dashboard/plugin");
+const BrowserSyncPlugin = require("browser-sync-webpack-plugin");
+const fs = require('fs');
+
+function generateHtmlPlugins(templateDirs) {
+    let plugins = [];
+    if (templateDirs === "" || templateDirs === []) return [];
+    if (!Array.isArray(templateDirs)) templateDirs = [templateDirs];
+
+    templateDirs.forEach((templateDir)=> {
+        let templateFiles;
+        try {
+            templateFiles = fs.readdirSync(path.resolve(__dirname, "src", templateDir));
+            console.log(path.resolve(__dirname, "src", templateDir));
+        } catch (e) {
+            if (e.errno === -4058) return []; // directory not found
+        }
+
+        templateFiles = templateFiles.filter((item) => {
+            const parts = item.split('.');
+            const name = parts[0];
+            const extension = parts[1];
+            return ["php", "html", "htm"].includes(extension);
+        });
+        plugins = templateFiles.map(item => {
+            const parts = item.split('.');
+            const name = parts[0];
+            const extension = parts[1];
+            console.log(path.resolve(__dirname, `src`, templateDir, `${name}.${extension}`));
+            return new HTMLWebpackPlugin({
+                filename: `${templateDir}${templateDir === "" ? "" : "/"}${name}.${extension}`,
+                template: path.resolve(__dirname, `src`, templateDir, `${name}.${extension}`),
+                chunks: ["analytics", name],
+                inject: true
+            })
+        }).concat(plugins);
+    });
+    return plugins;
+}
+
+const htmlPlugins = generateHtmlPlugins(["", "js"]);
+
+// ------------------
+
+module.exports = {
+    context: path.resolve(__dirname, "src"),
+    // режим по-умолчанию
+    mode: "development",
+    //cache: false,
+    devtool: "source-map",
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+            "@img": path.resolve(__dirname, "src/img"),
+            "img": path.resolve(__dirname, "src/img"),
+            "img_dist": "dist/debug/img"
+        }
+    },
+    optimization: {
+        splitChunks: {
+            // Если несколько точек входа, то не грузить общий код дважды, в к файле vendors-...
+            // chunks: "all"
+        }
+    },
+    entry: {
+        // 3 точки входа
+        index: "./js/index.js",
+        analytics: "./js/analytics.js",
+        contacts: "./js/contacts.js"
+    },
+    output: {
+        // для каждой точки входа своя точка выхода
+        filename: "./js/[name].[contenthash].js",
+        // TBD: if is production => to folder "dist/release"
+        path: path.resolve(__dirname, "dist/debug")
+    },
+    /*devServer: {
+        port: 4000,
+        writeToDisk: (fileName) => {
+            return (/\.(html?|php)$/.test(fileName));
+        },
+        proxy: {
+            "/": {
+                target: "http://localhost:800/code/sandbox/webpack-test/dist/debug",
+            }
+        }
+    },*/
+    plugins: [
+        // NASA plugin
+        new DashboardPlugin({}),
+
+        // not cleaned from memory for devServer
+        new CleanWebpackPlugin({
+            cleanStaleWebpackAssets: false, // не очищать неиспользуемое при ребилде
+            //cleanAfterEveryBuildPatterns: ["!**/.htaccess"],
+        }),
+        /*new HTMLWebpackPlugin({
+            filename: "index.php",
+            template: "./index.php",
+            chunks: ["analytics", "index"]
+        }),
+        new HTMLWebpackPlugin({
+            filename: "contacts.php",
+            template: "./contacts.php",
+            chunks: ["analytics", "contacts"]
+        }),*/
+        new BrowserSyncPlugin({
+            port: 3000,
+            proxy: "http://localhost:800/code/sandbox/webpack-test/dist/debug"
+        }),
+        /*
+        new CopyWebpackPlugin([
+            {
+                from: "./.htaccess",
+                to: path.resolve(__dirname, "dist/debug")
+            }
+        ]),
+        */
+        new ImageminPlugin({
+            disable: process.env.NODE_ENV !== 'production', // Disable during development
+            test: /\.(jpe?g|png|gif|svg|webp)$/i,
+            plugins: [
+                imageminMozjpeg({
+                    quality: 20,
+                    progressive: true
+                }),
+                imageminWebp({
+                    quality: 50
+                })
+            ]
+        })
+    ].concat(htmlPlugins),
+    // HTMLWebpackPlugin:
+    // 1. Создаёт HTML на основе template
+    // 2. Вставляет <script> в HTML
+    module: {
+        rules: [
+            {
+                test: /\.css$/i,
+                // css-loader: возможность сделать так: import "../style/style.css" в js-коде
+                // style-loader: добавляет css в head в HTML
+                use: ["style-loader", "css-loader"]
+            },
+            /*{!!!!!!!!!!!!!!HTML_LOADER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                test: /\.(html?|php)$/i,
+                use: [{
+                    // 1. Минимизирует HTML
+                    // 2. Ищет изображения в HTML и делает их импорт через JS: import img from "./image.png"
+                    // 3. Меняет путь до изображения в HTML
+                    loader: "html-loader"
+                }]
+                //use: ["file-loader?name=[name].[ext]", "extract-loader", "html-loader"]
+                //loader: "html-loader"
+                // options: {
+                //     attributes: {
+                //         root: "."
+                //     }
+                // }
+            },*/
+            {
+                test: /\.(png|jpe?g|gif|svg|webp)$/,
+                use: [{
+                    // JS import и require теперь понимает как работать с картинками
+                    // Копирует картинки в нужную папку
+                    loader: 'file-loader',
+                    options: {
+                        /*name: f => {
+                            let dirNameInsideAssets = path.relative(path.join(__dirname, 'src', 'img'), path.dirname(f));
+                            return `${dirNameInsideAssets}/[name].[ext]`;
+                        }*/
+                        name: '[name].[contenthash].[ext]',
+                        outputPath: "img",
+                        //context: "img",
+                        publicPath: (url, resourcePath, context) => {
+                            return "./img/" + url;
+                        }
+                        //useRelativePath: true,
+                        //context: "src"
+                        //publicPath: "img",
+                        //postTransformPublicPath: (p) => `__webpack_public_path__ + ${p}`
+                    }
+                }]
+            }
+        ]
+    }
+};

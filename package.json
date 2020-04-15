@@ -1,0 +1,41 @@
+{
+  "name": "webpack-test",
+  "version": "1.0.0",
+  "description": "webpack test",
+  "private": true,
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production",
+    "watch": "webpack --mode development --watch",
+    "devserver": "webpack-dev-server --mode development --open",
+    "nasa": "webpack-dashboard -- npm run dev"
+  },
+  "keywords": [
+    "webpack",
+    "javascript"
+  ],
+  "author": "Chernetsky Ilya <ilya@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.5.1",
+    "extract-loader": "^5.0.1",
+    "file-loader": "^6.0.0",
+    "html-loader": "^1.1.0",
+    "html-webpack-plugin": "^4.0.4",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dashboard": "^3.2.0",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-webp": "^5.1.0",
+    "imagemin-webpack-plugin": "^2.4.2",
+    "normalize.css": "^8.0.1"
+  }
+}

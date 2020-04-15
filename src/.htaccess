@@ -1,0 +1,3 @@
+AddType application/x-httpd-php .php .htm .html
+Options +Includes +FollowSymLinks -Indexes
+DirectoryIndex index.php index.html
