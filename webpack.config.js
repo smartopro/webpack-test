@@ -148,7 +148,7 @@ module.exports = {
                 // style-loader: добавляет css в head в HTML
                 use: ["style-loader", "css-loader"]
             },
-            /*{!!!!!!!!!!!!!!HTML_LOADER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            /*{!!!!!!!!!!!!!!HTML_LOADER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 test: /\.(html?|php)$/i,
                 use: [{
                     // 1. Минимизирует HTML
@@ -179,7 +179,7 @@ module.exports = {
                         outputPath: "img",
                         //context: "img",
                         publicPath: (url, resourcePath, context) => {
-                            return "./img/" + url;
+                            return "./img/"+url;
                         }
                         //useRelativePath: true,
                         //context: "src"
