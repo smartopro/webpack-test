@@ -8,7 +8,10 @@
     "build": "webpack --mode production",
     "watch": "webpack --mode development --watch",
     "devserver": "webpack-dev-server --mode development --open",
-    "nasa": "webpack-dashboard -- npm run dev"
+    "nasa": "webpack-dashboard -- npm run dev",
+    "webpack-debug": "node --inspect node_modules\\webpack\\bin\\webpack.js",
+    "nodemon-debug": "nodemon --inspect --watch webpack.config.js --watch src node_modules\\webpack\\bin\\webpack.js",
+    "nodemon": "nodemon --watch **/*.* node_modules\\webpack\\bin\\webpack.js"
   },
   "keywords": [
     "webpack",
@@ -25,7 +28,11 @@
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.0.4",
+    "imagemin-mozjpeg": "^8.0.0",
+    "imagemin-webp": "^5.1.0",
+    "imagemin-webpack-plugin": "^2.4.2",
     "jsdom": "^16.2.2",
+    "nodemon": "^2.0.3",
     "style-loader": "^1.1.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
@@ -33,9 +40,6 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "imagemin-mozjpeg": "^8.0.0",
-    "imagemin-webp": "^5.1.0",
-    "imagemin-webpack-plugin": "^2.4.2",
     "normalize.css": "^8.0.1"
   }
 }

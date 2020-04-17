@@ -18,6 +18,7 @@
             echo 'Php отработается!';
             ?>
         </div>
+
         <img src="../img/2.jpg" alt="1" />
         <img src="../img/1.webp" alt="1" />
     </div>

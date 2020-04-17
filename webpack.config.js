@@ -54,14 +54,12 @@ module.exports = {
     context: path.resolve(__dirname, "src"),
     // режим по-умолчанию
     mode: "development",
-    cache: false,
+    //cache: false,
     devtool: "source-map",
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "src"),
-            "@img": path.resolve(__dirname, "src/img"),
-            "img": path.resolve(__dirname, "src/img"),
-            "img_dist": "dist/debug/img"
+            "@img": path.resolve(__dirname, "src/img")
         }
     },
     optimization: {
@@ -99,7 +97,7 @@ module.exports = {
 
         // not cleaned from memory for devServer
         new CleanWebpackPlugin({
-            cleanStaleWebpackAssets: false, // очищать неиспользуемое при ребилде?
+            cleanStaleWebpackAssets: false // очищать неиспользуемое при ребилде?
             //cleanAfterEveryBuildPatterns: ["!**/.htaccess"],
         }),
         /*new HTMLWebpackPlugin({
@@ -170,12 +168,13 @@ module.exports = {
                         }
                     }]
             },*/
-            /*{
+            {
                 test: /\.(png|jpe?g|gif|svg|webp)$/,
                 use: [
                     {
                     // JS import и require теперь понимает как работать с картинками
-                    // Копирует картинки в нужную папку
+                    // CSS и JS код меняют в коде названия файлов на те, что прописаны в options
+                    // Копирует картинки c новыми именами в нужную папку
                     loader: 'file-loader',
                     options: {
                         name: "[name].[contenthash].[ext]",
@@ -183,7 +182,7 @@ module.exports = {
 
                     }
                 }]
-            }*/
+            }
         ]
     }
 };
