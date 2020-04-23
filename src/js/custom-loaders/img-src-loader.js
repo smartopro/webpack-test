@@ -1,8 +1,5 @@
-/*export default function(source) {
-    return source;
-}*/
-
 module.exports = function (source) {
+//export default function(source) {
     /*let relativePath = path.relative(loaderContext.context, path.join(__dirname, "src"));
     if (relativePath !== "") relativePath += "/";
     //console.log("\""+relativePath+"\"");

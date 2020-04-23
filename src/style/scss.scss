@@ -1,0 +1,13 @@
+$boxColor: #F0F;
+$border: 3px green solid;
+
+.card {
+  padding: 1rem;
+  color: $boxColor;
+  border: $border;
+  box-sizing: border-box;
+
+  h2 {
+    text-align: center;
+  }
+}

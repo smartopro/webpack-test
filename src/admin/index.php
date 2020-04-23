@@ -12,15 +12,15 @@
         <a href="../contacts.php">From js folder</a>
         <a href="../">Главная</a>
 
-        <h1>Webpack course in folder /js </h1>
+        <h1>Webpack course in folder /admin </h1>
         <div>
             <?php
             echo 'Php отработается!';
             ?>
         </div>
 
-        <img src="../img/2.jpg" alt="1" />
-        <img src="../img/1.webp" alt="1" />
+        <img src='./../img/2.jpg' alt="123" />
+        <img src="../img/1.webp" alt="321" />
     </div>
 </body>
 </html>
